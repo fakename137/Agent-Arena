@@ -1,0 +1,312 @@
+/* App-specific styles for Agent Arena Fight Club */
+
+.app-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+.fight-club-logo {
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.underground-text {
+  font-family: 'Courier New', monospace;
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.battle-arena {
+  background: radial-gradient(circle at center, #2d3748 0%, #1a202c 100%);
+  border: 2px solid #4a5568;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.battle-arena::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%234a5568" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.agent-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #4a5568;
+  background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  position: relative;
+}
+
+.agent-avatar.bitcoin {
+  border-color: #f7931a;
+  background: linear-gradient(135deg, #f7931a 0%, #e6a23c 100%);
+}
+
+.agent-avatar.ethereum {
+  border-color: #627eea;
+  background: linear-gradient(135deg, #627eea 0%, #4c63d2 100%);
+}
+
+.agent-avatar.altcoin {
+  border-color: #ff6b6b;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+}
+
+.agent-avatar.stablecoin {
+  border-color: #51cf66;
+  background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+}
+
+.health-indicator {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 8px;
+  background: #374151;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.health-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+  transition: width 0.3s ease;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(55, 65, 81, 0.5);
+  border-radius: 8px;
+  border: 1px solid #4a5568;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fbbf24;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.battle-log {
+  background: rgba(17, 24, 39, 0.8);
+  border: 1px solid #374151;
+  border-radius: 8px;
+  padding: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+.battle-log-entry {
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid #374151;
+}
+
+.battle-log-entry:last-child {
+  border-bottom: none;
+}
+
+.battle-log-entry.attack {
+  color: #f87171;
+}
+
+.battle-log-entry.defense {
+  color: #60a5fa;
+}
+
+.battle-log-entry.special {
+  color: #fbbf24;
+  font-weight: bold;
+}
+
+.battle-log-entry.ko {
+  color: #ef4444;
+  font-weight: bold;
+  animation: pulse-red 1s infinite;
+}
+
+.spectator-panel {
+  background: rgba(31, 41, 55, 0.9);
+  border: 1px solid #4a5568;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.betting-odds {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: rgba(55, 65, 81, 0.5);
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.odds-value {
+  font-weight: bold;
+  color: #fbbf24;
+}
+
+.market-ticker {
+  background: rgba(17, 24, 39, 0.8);
+  border: 1px solid #374151;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ticker-item {
+  display: inline-block;
+  margin-right: 2rem;
+  animation: ticker 20s linear infinite;
+}
+
+.ticker-item.positive {
+  color: #10b981;
+}
+
+.ticker-item.negative {
+  color: #ef4444;
+}
+
+@keyframes ticker {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.loading-spinner {
+  border: 2px solid #374151;
+  border-top: 2px solid #f87171;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #1f2937;
+  border: 1px solid #4a5568;
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  background-color: #1f2937;
+  color: #f9fafb;
+  text-align: center;
+  border-radius: 6px;
+  padding: 0.5rem;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border: 1px solid #4a5568;
+  font-size: 0.875rem;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .agent-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+
+  .battle-arena {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    padding: 1rem;
+  }
+}
