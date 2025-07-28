@@ -1,0 +1,167 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Arial', sans-serif;
+  background: #000;
+  color: white;
+}
+
+.battle-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.loading-text {
+  font-size: 24px;
+  color: #ff6b35;
+  margin-top: 20px;
+}
+
+.health-bar-container {
+  position: absolute;
+  top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  z-index: 10;
+}
+
+.health-bar {
+  width: 300px;
+  height: 30px;
+  background: #333;
+  border: 2px solid #ff6b35;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.health-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.boss-health {
+  background: linear-gradient(to right, #ff0000, #ff6b35);
+}
+
+.remy-health {
+  background: linear-gradient(to right, #0066cc, #3399ff);
+}
+
+.character-name {
+  position: absolute;
+  top: 60px;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 5px black;
+}
+
+.boss-name {
+  left: 20%;
+}
+
+.remy-name {
+  right: 20%;
+}
+
+.battle-title {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ff6b35;
+  font-size: 32px;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  z-index: 10;
+}
+
+.controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  text-align: center;
+  z-index: 10;
+  border: 1px solid #ff6b35;
+}
+
+.blood-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 5;
+  background: radial-gradient(
+    circle,
+    rgba(255, 0, 0, 0.7) 0%,
+    rgba(255, 0, 0, 0) 70%
+  );
+}
+
+.blood-flash {
+  animation: bloodFlash 0.5s ease-out;
+}
+
+@keyframes bloodFlash {
+  0% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.move-buttons {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.move-button {
+  padding: 8px 15px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid #ff6b35;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.move-button:hover {
+  background: rgba(255, 107, 53, 0.3);
+}
+
+.move-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -429,16 +429,16 @@ def handle_join_battle(data):
     logger.info(f'🥊 AI Service: Client joined battle {battle_id}')
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    debug = os.environ.get('FLASK_ENV') == 'development'
+    print("🥊 AGENT ARENA AI SERVICE 🥊")
+    print("================================")
+    print(f"🚀 AI Service starting on port 5000")
+    print(f"🌍 Environment: {os.getenv('FLASK_ENV', 'development')}")
+    print(f"⏰ Started at: {datetime.now().isoformat()}")
+    print("================================")
+    print()
     
-    logger.info(f"""
-🥊 AGENT ARENA AI SERVICE 🥊
-================================
-🚀 AI Service starting on port {port}
-🌍 Environment: {os.environ.get('FLASK_ENV', 'production')}
-⏰ Started at: {datetime.now().isoformat()}
-================================
-    """)
-    
-    socketio.run(app, host='0.0.0.0', port=port, debug=debug) 
+    socketio.run(app, 
+                host='0.0.0.0', 
+                port=5000, 
+                debug=True,
+                allow_unsafe_werkzeug=True) 
