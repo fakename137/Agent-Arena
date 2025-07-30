@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { useAccount, useDisconnect } from 'wagmi';
+import Link from 'next/link';
 
 export default function HomePageBackground() {
   const mountRef = useRef(null);
@@ -9,6 +11,13 @@ export default function HomePageBackground() {
   const [charactersLoaded, setCharactersLoaded] = useState(false);
   const [showReadyText, setShowReadyText] = useState(false);
   const [error, setError] = useState(null);
+  const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect(); // Add this line to get the disconnect function
+
+  const displayAddress =
+    address && typeof address === 'string'
+      ? `${address.slice(0, 6)}...${address.slice(-4)}`
+      : 'Unknown';
 
   // Ref to hold game state including animation data
   const gameRef = useRef({
@@ -537,7 +546,6 @@ export default function HomePageBackground() {
           zIndex: 2,
         }}
       />
-
       {/* Loading Overlay */}
       {showInitialLoading && (
         <div
@@ -561,7 +569,6 @@ export default function HomePageBackground() {
           Loading Environment...
         </div>
       )}
-
       {/* "Ready to Fight..." Overlay */}
       {showReadyText && !charactersLoaded && (
         <div
@@ -585,7 +592,6 @@ export default function HomePageBackground() {
           Ready to Fight...
         </div>
       )}
-
       {/* Header: Fighter Names and Timer/VS */}
       <div
         style={{
@@ -663,29 +669,87 @@ export default function HomePageBackground() {
           ETHEREUM REMY
         </div>
       </div>
+      {/* ... inside your return statement's JSX, replacing the old connection display and Link ... */}
 
-      {/* Connect Wallet Button (top right) */}
-      {/* <button
+      {/* Wallet Connection/Disconnection UI */}
+      <div
         style={{
           position: 'absolute',
-          top: 240,
-          right: 48,
-          zIndex: 20,
-          background: '#b30000',
-          color: '#fff',
-          fontWeight: 700,
-          fontSize: 18,
-          border: '2px solid #fff',
-          borderRadius: 12,
-          padding: '8px 24px',
-          boxShadow: '0 2px 8px #000',
-          cursor: 'pointer',
-          textShadow: '1px 1px 2px #000',
+          top: 20,
+          right: 20,
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+          gap: '10px', // Add some space between address and button
         }}
-        onClick={() => alert('Connect Wallet!')}
       >
-        Connect Wallet
-      </button> */}
+        {isConnected ? (
+          <>
+            <div
+              style={{
+                background: 'rgba(0, 100, 0, 0.8)', // Dark green background
+                color: '#fff',
+                padding: '8px 12px',
+                borderRadius: '8px',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                border: '1px solid #0f0', // Green border
+                boxShadow: '0 2px 4px rgba(0,0,0,0.5)',
+              }}
+            >
+              Connected: {displayAddress}
+            </div>
+            <button
+              onClick={() => disconnect()} // Call the disconnect function
+              style={{
+                background: 'rgba(139, 0, 0, 0.8)', // Dark red background
+                color: '#fff',
+                fontWeight: 'bold',
+                padding: '6px 12px',
+                borderRadius: '6px',
+                border: '1px solid #f00', // Red border
+                boxShadow: '0 2px 4px rgba(0,0,0,0.5)',
+                cursor: 'pointer',
+              }}
+            >
+              Disconnect
+            </button>
+          </>
+        ) : (
+          <div
+            style={{
+              background: 'rgba(100, 100, 0, 0.8)', // Dark yellow/orange background
+              color: '#fff',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              fontSize: '16px',
+              fontWeight: 'bold',
+              border: '1px solid #ff0', // Yellow border
+              boxShadow: '0 2px 4px rgba(0,0,0,0.5)',
+            }}
+          >
+            Wallet Not Connected
+          </div>
+        )}
+      </div>
+
+      {/* Optional: Remove or hide the old Link if it's not needed on the Arena page itself
+  <Link
+    href="/arena"
+    className="bg-yellow-600 hover:bg-yellow-700 text-black font-bold py-3 px-6 rounded text-lg"
+   >
+    Enter the Arena
+  </Link>
+  */}
+
+      {/* ... rest of your JSX ... */}
+      <Link
+        href="/arena"
+        className="bg-yellow-600 hover:bg-yellow-700 text-black font-bold py-3 px-6 rounded text-lg"
+      >
+        Enter the Arena
+      </Link>
       <div
         style={{
           position: 'absolute',
@@ -778,7 +842,6 @@ export default function HomePageBackground() {
           </div>
         </div>
       </div>
-
       {/* Upcoming Events Card (right) */}
       <div
         style={{
@@ -840,7 +903,6 @@ export default function HomePageBackground() {
           {upcomingEvent.time}
         </div>
       </div>
-
       {/* Battle Now Button (center bottom) */}
       <button
         style={{
@@ -865,7 +927,6 @@ export default function HomePageBackground() {
       >
         Fight Now
       </button>
-
       {/* Fight Club Rules (bottom center) */}
       <div
         style={{
@@ -886,7 +947,6 @@ export default function HomePageBackground() {
         <br />
         second, you do not talk about Fight Club
       </div>
-
       {error && (
         <div
           style={{

@@ -1,7 +1,8 @@
 // File: pages/battles/basement.js
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { usePythPriceStream } from '../../hooks/usePythPrices';
+import { loadCharacters } from '../../components.jsx/Characters'; // Import the new hook
 
 export default function StreetBattle() {
   const mountRef = useRef(null);
@@ -10,6 +11,111 @@ export default function StreetBattle() {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState({ boss: 0, remy: 0 });
   const [combatLog, setCombatLog] = useState([]);
+  // Inside your component function, near other useState calls
+  const [startPrices, setStartPrices] = useState({ btc: null, eth: null }); // To store prices when battle starts
+  const [battleWinner, setBattleWinner] = useState(null); // To store the winner based on price change
+  const [priceChange, setPriceChange] = useState({ btc: 0, eth: 0 }); // To store % change
+
+  const [timer, setTimer] = useState(180); // 3 minutes
+  const [isBattleActive, setIsBattleActive] = useState(false);
+
+  const [isStreaming, setIsStreaming] = useState(false);
+  useEffect(() => {
+    if (isBattleActive) {
+      setIsStreaming(true);
+    } else {
+      // Optional: keep streaming for latest prices, or stop
+      setIsStreaming(false);
+    }
+  }, [isBattleActive]);
+  const {
+    btcPrice,
+    ethPrice,
+    loading: pythloading,
+    error,
+  } = usePythPriceStream(isStreaming);
+  // Update the timer useEffect
+  useEffect(() => {
+    let intervalId;
+    if (isBattleActive && timer > 0) {
+      intervalId = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (timer === 0 && isBattleActive) {
+      // Check if battle was active
+      setIsBattleActive(false);
+      // --- Trigger battle resolution logic here ---
+      console.log('Timer ended. Start prices:', startPrices, 'End prices:', {
+        btcPrice,
+        ethPrice,
+      });
+
+      // Ensure we have start prices and current prices
+      if (
+        startPrices.btc !== null &&
+        startPrices.eth !== null &&
+        btcPrice !== null &&
+        ethPrice !== null
+      ) {
+        // Calculate percentage change
+        const btcChangePercent =
+          ((btcPrice - startPrices.btc) / startPrices.btc) * 100;
+        const ethChangePercent =
+          ((ethPrice - startPrices.eth) / startPrices.eth) * 100;
+
+        setPriceChange({ btc: btcChangePercent, eth: ethChangePercent });
+
+        let winner = 'Tie';
+        if (btcChangePercent > ethChangePercent) {
+          winner = 'BTC';
+        } else if (ethChangePercent > btcChangePercent) {
+          winner = 'ETH';
+        }
+        // Optional: Add logic for ties or minimum thresholds
+        setBattleWinner(winner);
+        console.log(
+          `Battle resolved. BTC: ${btcChangePercent.toFixed(
+            2
+          )}%, ETH: ${ethChangePercent.toFixed(2)}%. Winner: ${winner}`
+        );
+        // You could trigger a specific animation or sound based on the winner here
+        // e.g., if (winner === 'BTC') { taunt('remy'); } else if (winner === 'ETH') { taunt('boss'); }
+      } else {
+        console.warn('Cannot resolve battle: Missing start or end price data.');
+        setBattleWinner('Data Error');
+      }
+    }
+    return () => clearInterval(intervalId);
+  }, [isBattleActive, timer, btcPrice, ethPrice, startPrices]); // Add dependencies
+
+  // Update the handleStartBattle function
+  const handleStartBattle = () => {
+    if (!isBattleActive) {
+      // Prevent restarting if already active
+      setIsBattleActive(true);
+      setTimer(180);
+      // --- Capture start data (prices) here for scoring later ---
+      if (btcPrice !== null && ethPrice !== null) {
+        setStartPrices({ btc: btcPrice, eth: ethPrice });
+        console.log('Battle started. Start prices captured:', {
+          btc: btcPrice,
+          ethPrice,
+        });
+        // Reset winner and price change when battle starts
+        setBattleWinner(null);
+        setPriceChange({ btc: 0, eth: 0 });
+      } else {
+        console.warn('Cannot start battle: Price data not available yet.');
+        // Optionally, prevent starting or show an error
+      }
+      // --- Reset health for a new battle if needed ---
+      // setBossHealth(100);
+      // setRemyHealth(100);
+      // resetToIdle('boss');
+      // resetToIdle('remy');
+    }
+  };
+
   const gameRef = useRef({
     scene: null,
     camera: null,
@@ -190,242 +296,6 @@ export default function StreetBattle() {
       // });
     };
   }, []); // Ensure loadCharacters is either defined inside or its dependencies are handled correctly
-
-  const loadCharacters = (scene) => {
-    const loader = new FBXLoader();
-
-    // Load Brad (facing Remy)
-    loader.load(
-      '/characters/The Boss.fbx',
-      (object) => {
-        console.log('Brad loaded successfully:', object);
-        // Use same scale as Remy for consistency
-        object.scale.set(0.02, 0.02, 0.02);
-        // Position Brad on the ground (Y=-2) and adjust X/Z as needed
-        // --- CONFIRMED: Boss Y position is set to -2 ---
-        object.position.set(-0.5, -2, 0); // Keep Y at -2 for his ground level
-        object.rotation.y = Math.PI / 2; // Face Remy
-
-        // Ensure visibility and shadows
-        object.traverse((child) => {
-          if (child.isMesh) {
-            child.visible = true;
-            child.castShadow = true;
-            child.receiveShadow = true;
-          }
-        });
-
-        scene.add(object);
-        gameRef.current.boss = object;
-        gameRef.current.mixerBoss = new THREE.AnimationMixer(object);
-
-        // Use same animations as Remy
-        const animations = [
-          'Bouncing Fight Idle.fbx',
-          'Hook Punch.fbx',
-          'Punching.fbx',
-          'Roundhouse Kick.fbx',
-          'Fist Fight A.fbx',
-          'Hurricane Kick.fbx',
-          'Knee Kick Lead.fbx',
-          'Au To Role.fbx',
-          'Body Block.fbx',
-          'Taunt.fbx',
-          'Death From Right.fbx',
-          'Defeated.fbx',
-          'Martelo 2.fbx',
-          'Esquiva 2.fbx',
-          'Esquiva 5.fbx',
-        ];
-
-        let loadedCount = 0;
-
-        // Load all animations for Brad
-        animations.forEach((animFile) => {
-          loader.load(
-            `/Animations/${animFile}`,
-            (anim) => {
-              if (anim.animations.length > 0) {
-                const action = gameRef.current.mixerBoss.clipAction(
-                  anim.animations[0]
-                );
-                gameRef.current.actions.boss[animFile] = action;
-
-                // Set idle as default
-                if (animFile === 'Bouncing Fight Idle.fbx') {
-                  action.setLoop(THREE.LoopRepeat);
-                  action.play();
-                  gameRef.current.currentActions.boss = action;
-                }
-              }
-
-              loadedCount++;
-              setProgress((prev) => ({
-                ...prev,
-                boss: loadedCount,
-              }));
-
-              // Note: Progress check logic might need adjustment if animation counts differ
-              // For now, assuming both have 15 animations like in the list above.
-              // You might need to adjust the checkLoadingCompletion logic or the progress tracking
-              // if the actual number of successfully loaded animations differs.
-
-              if (loadedCount === animations.length) {
-                // Check if both characters are loaded
-                if (gameRef.current.boss && gameRef.current.remy) {
-                  // Check if animations for both are loaded (approximate)
-                  // A more robust check would track progress for both characters separately
-                  // and compare to their respective animation counts.
-                  // This is a simplification based on the assumption both lists have 15 items.
-                  // You might see "Brad: 15/18" in the UI if the old checkLoadingCompletion logic
-                  // is still expecting 18. You can adjust that too.
-                  if (progress.remy >= 15) {
-                    // Assuming Remy also has 15 animations loaded
-                    setLoading(false);
-                  }
-                }
-              }
-            },
-            undefined,
-            (error) => {
-              console.error(`Error loading Brad animation ${animFile}:`, error);
-              loadedCount++;
-              setProgress((prev) => ({
-                ...prev,
-                boss: loadedCount,
-              }));
-
-              if (loadedCount === animations.length) {
-                if (gameRef.current.boss && gameRef.current.remy) {
-                  if (progress.remy >= 15) {
-                    setLoading(false);
-                  }
-                }
-              }
-            }
-          );
-        });
-      },
-      undefined,
-      (error) => {
-        console.error('Error loading Brad character:', error);
-        // Attempt to finish loading even if one character fails
-        if (gameRef.current.remy) {
-          if (progress.remy >= 15) {
-            setLoading(false);
-          }
-        }
-      }
-    );
-
-    // Load Remy (facing Boss)
-    loader.load(
-      '/characters/Remy.fbx',
-      (object) => {
-        object.scale.set(0.01, 0.01, 0.01);
-        // Position Remy on the ground (Y=0) and adjust X/Z as needed
-        // --- CONFIRMED: Remy Y position is correctly set to 0 ---
-        object.position.set(2.5, 0, 0); // Keep Y at 0 for ground level
-        object.rotation.y = -Math.PI / 2; // Face Boss
-
-        object.traverse((child) => {
-          if (child.isMesh) {
-            child.visible = true;
-            child.castShadow = true;
-            child.receiveShadow = true;
-          }
-        });
-
-        scene.add(object);
-        gameRef.current.remy = object;
-        gameRef.current.mixerRemy = new THREE.AnimationMixer(object);
-
-        // Load animations
-        const animations = [
-          'Bouncing Fight Idle.fbx',
-          'Hook Punch.fbx',
-          'Punching.fbx',
-          'Roundhouse Kick.fbx',
-          'Fist Fight A.fbx',
-          'Hurricane Kick.fbx',
-          'Knee Kick Lead.fbx',
-          'Au To Role.fbx',
-          'Body Block.fbx',
-          'Taunt.fbx',
-          'Death From Right.fbx',
-          'Defeated.fbx',
-          'Martelo 2.fbx',
-          'Esquiva 2.fbx',
-          'Esquiva 5.fbx',
-        ];
-
-        let loadedCount = 0;
-
-        animations.forEach((animFile) => {
-          loader.load(
-            `/Animations/${animFile}`,
-            (anim) => {
-              if (anim.animations.length > 0) {
-                const action = gameRef.current.mixerRemy.clipAction(
-                  anim.animations[0]
-                );
-                gameRef.current.actions.remy[animFile] = action;
-
-                // Set idle as default
-                if (animFile === 'Bouncing Fight Idle.fbx') {
-                  action.setLoop(THREE.LoopRepeat);
-                  action.play();
-                  gameRef.current.currentActions.remy = action;
-                }
-              }
-
-              loadedCount++;
-              setProgress((prev) => ({
-                ...prev,
-                remy: loadedCount,
-              }));
-
-              if (loadedCount === animations.length) {
-                if (gameRef.current.boss && gameRef.current.remy) {
-                  if (progress.boss >= 15) {
-                    // Assuming Brad also has 15 animations loaded
-                    setLoading(false);
-                  }
-                }
-              }
-            },
-            undefined,
-            (error) => {
-              console.error(`Error loading Remy animation ${animFile}:`, error);
-              loadedCount++;
-              setProgress((prev) => ({
-                ...prev,
-                remy: loadedCount,
-              }));
-
-              if (loadedCount === animations.length) {
-                if (gameRef.current.boss && gameRef.current.remy) {
-                  if (progress.boss >= 15) {
-                    setLoading(false);
-                  }
-                }
-              }
-            }
-          );
-        });
-      },
-      undefined,
-      (error) => {
-        console.error('Error loading Remy character:', error);
-        // Attempt to finish loading even if one character fails
-        if (gameRef.current.boss) {
-          if (progress.boss >= 15) {
-            setLoading(false);
-          }
-        }
-      }
-    );
-  };
 
   // Stop all animations for a character
   const stopAllAnimations = (character) => {
@@ -978,6 +848,7 @@ export default function StreetBattle() {
       ></div>
 
       {/* Health bars */}
+      {/* Live Prices and Battle Result Display */}
       <div
         style={{
           position: 'absolute',
