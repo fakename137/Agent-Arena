@@ -1,6 +1,7 @@
 // pages/_app.js
 import '../styles/globals.css';
 import { SequenceConnect, createConfig } from '@0xsequence/connect';
+import Head from 'next/head';
 
 function MyApp({ Component, pageProps }) {
   // 🔐 Your Sequence Keys (from dashboard)
@@ -36,9 +37,14 @@ function MyApp({ Component, pageProps }) {
   });
 
   return (
-    <SequenceConnect config={config}>
-      <Component {...pageProps} />
-    </SequenceConnect>
+    <>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <SequenceConnect config={config}>
+        <Component {...pageProps} />
+      </SequenceConnect>
+    </>
   );
 }
 

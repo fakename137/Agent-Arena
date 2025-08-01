@@ -927,6 +927,41 @@ export default function HomePageBackground() {
       >
         Fight Now
       </button>
+
+      {/* Buy Characters Button (top right) */}
+      <button
+        style={{
+          position: 'absolute',
+          top: 20,
+          right: 20,
+          zIndex: 20,
+          background: '#ff6b35',
+          color: '#fff',
+          fontWeight: 700,
+          fontSize: 18,
+          border: '2px solid #fff',
+          borderRadius: 12,
+          padding: '10px 24px',
+          boxShadow: '0 4px 12px rgba(255, 107, 53, 0.4)',
+          cursor: 'pointer',
+          letterSpacing: 0.5,
+          textShadow: '1px 1px 2px #000',
+          transition: 'all 0.3s ease',
+        }}
+        onMouseEnter={(e) => {
+          e.target.style.background = '#ff8c42';
+          e.target.style.transform = 'translateY(-2px)';
+          e.target.style.boxShadow = '0 6px 16px rgba(255, 107, 53, 0.6)';
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.background = '#ff6b35';
+          e.target.style.transform = 'translateY(0)';
+          e.target.style.boxShadow = '0 4px 12px rgba(255, 107, 53, 0.4)';
+        }}
+        onClick={() => (window.location.href = '/marketplace')}
+      >
+        Buy Characters
+      </button>
       {/* Fight Club Rules (bottom center) */}
       <div
         style={{
