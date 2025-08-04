@@ -393,6 +393,7 @@ export default function Marketplace() {
             background: 'rgba(255, 51, 51, 0.2)',
             color: '#ff3333',
             border: '2px solid #ff3333',
+            marginTop: '60px',
             padding: '10px 20px',
             borderRadius: '25px',
             cursor: 'pointer',
@@ -412,43 +413,6 @@ export default function Marketplace() {
           }}
         >
           ← Back to Arena
-        </button>
-        <h1
-          style={{
-            color: '#ff3333',
-            fontSize: '32px',
-            fontWeight: 'bold',
-            textShadow: '0 0 10px rgba(255, 51, 51, 0.5)',
-            margin: 0,
-          }}
-        >
-          NFT Character Marketplace
-        </h1>
-        <button
-          onClick={goToBattles}
-          style={{
-            background: 'rgba(255, 153, 0, 0.2)',
-            color: '#ff9900',
-            border: '2px solid #ff9900',
-            borderRadius: '25px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            transition: 'all 0.3s ease',
-            padding: '10px 20px',
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.background = 'rgba(255, 153, 0, 0.4)';
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 4px 15px rgba(255, 153, 0, 0.3)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = 'rgba(255, 153, 0, 0.2)';
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = 'none';
-          }}
-        >
-          Battle Arena →
         </button>
       </div>
 
@@ -897,6 +861,32 @@ export default function Marketplace() {
             </>
           )}
         </div>
+        <button
+          onClick={goToBattles}
+          style={{
+            background: 'rgba(255, 153, 0, 0.2)',
+            color: '#ff9900',
+            border: '2px solid #ff9900',
+            borderRadius: '25px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            transition: 'all 0.3s ease',
+            padding: '10px 20px',
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = 'rgba(255, 153, 0, 0.4)';
+            e.target.style.transform = 'translateY(-2px)';
+            e.target.style.boxShadow = '0 4px 15px rgba(255, 153, 0, 0.3)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = 'rgba(255, 153, 0, 0.2)';
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = 'none';
+          }}
+        >
+          Battle Arena →
+        </button>
       </div>
 
       {/* CSS Animation for Spinner */}

@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import { useAccount, useDisconnect } from 'wagmi';
 import Link from 'next/link';
 
 export default function HomePageBackground() {
@@ -11,13 +10,13 @@ export default function HomePageBackground() {
   const [charactersLoaded, setCharactersLoaded] = useState(false);
   const [showReadyText, setShowReadyText] = useState(false);
   const [error, setError] = useState(null);
-  const { address, isConnected } = useAccount();
-  const { disconnect } = useDisconnect(); // Add this line to get the disconnect function
 
-  const displayAddress =
-    address && typeof address === 'string'
-      ? `${address.slice(0, 6)}...${address.slice(-4)}`
-      : 'Unknown';
+  // Remove wagmi hooks to avoid disconnect errors
+  const address = null;
+  const isConnected = false;
+  const disconnect = () => {};
+
+  const displayAddress = 'Unknown';
 
   // Ref to hold game state including animation data
   const gameRef = useRef({
@@ -418,27 +417,55 @@ export default function HomePageBackground() {
       clearTimeout(initialDelayTimer);
       window.removeEventListener('resize', handleResize);
 
-      if (mountRef.current && renderer.domElement) {
-        mountRef.current.removeChild(renderer.domElement);
+      // Safely remove renderer from mount
+      if (mountRef.current && renderer && renderer.domElement) {
+        try {
+          mountRef.current.removeChild(renderer.domElement);
+        } catch (error) {
+          console.warn('Error removing renderer from mount:', error);
+        }
       }
 
-      const existingIframeContainer = document.getElementById(
-        'sketchfab-background-container'
-      );
-      if (existingIframeContainer && existingIframeContainer.parentNode) {
-        existingIframeContainer.parentNode.removeChild(existingIframeContainer);
+      // Safely remove iframe container
+      try {
+        const existingIframeContainer = document.getElementById(
+          'sketchfab-background-container'
+        );
+        if (existingIframeContainer && existingIframeContainer.parentNode) {
+          existingIframeContainer.parentNode.removeChild(
+            existingIframeContainer
+          );
+        }
+      } catch (error) {
+        console.warn('Error removing iframe container:', error);
       }
 
-      renderer.dispose();
+      // Safely dispose renderer
+      if (renderer) {
+        try {
+          renderer.dispose();
+        } catch (error) {
+          console.warn('Error disposing renderer:', error);
+        }
+      }
 
+      // Safely cleanup mixers
       if (gameRef.current.mixerBoss) {
-        gameRef.current.mixerBoss.stopAllAction();
-        gameRef.current.mixerBoss = null; // Clear reference
+        try {
+          gameRef.current.mixerBoss.stopAllAction();
+        } catch (error) {
+          console.warn('Error stopping boss mixer:', error);
+        }
+        gameRef.current.mixerBoss = null;
       }
 
       if (gameRef.current.mixerRemy) {
-        gameRef.current.mixerRemy.stopAllAction();
-        gameRef.current.mixerRemy = null; // Clear reference
+        try {
+          gameRef.current.mixerRemy.stopAllAction();
+        } catch (error) {
+          console.warn('Error stopping remy mixer:', error);
+        }
+        gameRef.current.mixerRemy = null;
       }
 
       // Cleanup animation intervals will be handled by the second useEffect
@@ -593,146 +620,8 @@ export default function HomePageBackground() {
         </div>
       )}
       {/* Header: Fighter Names and Timer/VS */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 32,
-          left: 0,
-          width: '90%',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          zIndex: 10,
-          padding: '0 48px',
-        }}
-      >
-        {/* Left Fighter Name */}
-        <div
-          style={{
-            color: '#ff9900',
-            fontWeight: 900,
-            fontSize: 36,
-            letterSpacing: 1,
-            textShadow: '2px 2px 8px #000',
-          }}
-        >
-          BITCOIN BRAD
-        </div>
-        {/* Center Timer and VS */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 4,
-          }}
-        >
-          <div
-            style={{
-              background: '#b30000',
-              color: '#fff',
-              fontWeight: 700,
-              fontSize: 18,
-              borderRadius: 8,
-              padding: '2px 16px',
-              marginBottom: 2,
-              fontFamily: 'monospace',
-              boxShadow: '0 2px 8px #000',
-              border: '2px solid #fff',
-              textShadow: '1px 1px 2px #000',
-            }}
-          >
-            time left: {timer}
-          </div>
-          <div
-            style={{
-              color: '#ff9900',
-              fontWeight: 900,
-              fontSize: 28,
-              letterSpacing: 2,
-              textShadow: '2px 2px 8px #000',
-            }}
-          >
-            VS
-          </div>
-        </div>
-        {/* Right Fighter Name */}
-        <div
-          style={{
-            color: '#ff9900',
-            fontWeight: 900,
-            fontSize: 36,
-            letterSpacing: 1,
-            textShadow: '2px 2px 8px #000',
-          }}
-        >
-          ETHEREUM REMY
-        </div>
-      </div>
-      {/* ... inside your return statement's JSX, replacing the old connection display and Link ... */}
 
-      {/* Wallet Connection/Disconnection UI */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 20,
-          right: 20,
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end',
-          gap: '10px', // Add some space between address and button
-        }}
-      >
-        {isConnected ? (
-          <>
-            <div
-              style={{
-                background: 'rgba(0, 100, 0, 0.8)', // Dark green background
-                color: '#fff',
-                padding: '8px 12px',
-                borderRadius: '8px',
-                fontSize: '16px',
-                fontWeight: 'bold',
-                border: '1px solid #0f0', // Green border
-                boxShadow: '0 2px 4px rgba(0,0,0,0.5)',
-              }}
-            >
-              Connected: {displayAddress}
-            </div>
-            <button
-              onClick={() => disconnect()} // Call the disconnect function
-              style={{
-                background: 'rgba(139, 0, 0, 0.8)', // Dark red background
-                color: '#fff',
-                fontWeight: 'bold',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                border: '1px solid #f00', // Red border
-                boxShadow: '0 2px 4px rgba(0,0,0,0.5)',
-                cursor: 'pointer',
-              }}
-            >
-              Disconnect
-            </button>
-          </>
-        ) : (
-          <div
-            style={{
-              background: 'rgba(100, 100, 0, 0.8)', // Dark yellow/orange background
-              color: '#fff',
-              padding: '8px 12px',
-              borderRadius: '8px',
-              fontSize: '16px',
-              fontWeight: 'bold',
-              border: '1px solid #ff0', // Yellow border
-              boxShadow: '0 2px 4px rgba(0,0,0,0.5)',
-            }}
-          >
-            Wallet Not Connected
-          </div>
-        )}
-      </div>
+      {/* ... inside your return statement's JSX, replacing the old connection display and Link ... */}
 
       {/* Optional: Remove or hide the old Link if it's not needed on the Arena page itself
   <Link
@@ -908,7 +797,7 @@ export default function HomePageBackground() {
         style={{
           position: 'absolute',
           left: '50%',
-          bottom: 80,
+          bottom: 200,
           transform: 'translateX(-50%)',
           zIndex: 20,
           background: '#ff9900',
@@ -932,31 +821,37 @@ export default function HomePageBackground() {
       <button
         style={{
           position: 'absolute',
-          top: 20,
-          right: 20,
+          bottom: 150,
+          left: '50%',
           zIndex: 20,
-          background: '#ff6b35',
-          color: '#fff',
+          background:
+            'linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%)', // Purple gradient
+          color: 'white',
           fontWeight: 700,
           fontSize: 18,
-          border: '2px solid #fff',
+          border: '2px solid rgba(255, 255, 255, 0.3)',
           borderRadius: 12,
           padding: '10px 24px',
-          boxShadow: '0 4px 12px rgba(255, 107, 53, 0.4)',
+          boxShadow: '0 4px 12px rgba(139, 92, 246, 0.4)',
           cursor: 'pointer',
           letterSpacing: 0.5,
-          textShadow: '1px 1px 2px #000',
+          textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
           transition: 'all 0.3s ease',
+          transform: 'translateX(-50%)',
         }}
         onMouseEnter={(e) => {
-          e.target.style.background = '#ff8c42';
-          e.target.style.transform = 'translateY(-2px)';
-          e.target.style.boxShadow = '0 6px 16px rgba(255, 107, 53, 0.6)';
+          e.target.style.background =
+            'linear-gradient(135deg, #7c3aed 0%, #9333ea 50%, #a855f7 100%)';
+          e.target.style.transform = 'translateX(-50%) translateY(-2px)';
+          e.target.style.boxShadow = '0 6px 16px rgba(139, 92, 246, 0.6)';
+          e.target.style.border = '2px solid rgba(255, 255, 255, 0.5)';
         }}
         onMouseLeave={(e) => {
-          e.target.style.background = '#ff6b35';
-          e.target.style.transform = 'translateY(0)';
-          e.target.style.boxShadow = '0 4px 12px rgba(255, 107, 53, 0.4)';
+          e.target.style.background =
+            'linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%)';
+          e.target.style.transform = 'translateX(-50%) translateY(0)';
+          e.target.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.4)';
+          e.target.style.border = '2px solid rgba(255, 255, 255, 0.3)';
         }}
         onClick={() => (window.location.href = '/marketplace')}
       >
