@@ -20,6 +20,12 @@ export default function HomePageBackground() {
 
   const displayAddress = 'Unknown'; // Simplified as wagmi hooks are removed
 
+  const handleViewBattle = (battleId) => {
+    // Redirect to basement-refactored page
+    console.log('Viewing battle:', battleId);
+    router.push('/basement-refactored');
+  };
+
   // Ref to hold game state including animation data
   const gameRef = useRef({
     scene: null,
@@ -816,7 +822,7 @@ export default function HomePageBackground() {
         }}
         onClick={() => router.push('/arena')}
       >
-        Fight Now
+        Enter the Arena
       </button>
 
       {/* Buy Characters Button (top right) */}

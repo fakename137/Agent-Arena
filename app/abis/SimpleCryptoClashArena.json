@@ -1,0 +1,291 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_userNftId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_durationSeconds",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_rewardAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_startPrice1",
+        "type": "uint256"
+      }
+    ],
+    "name": "queueForFight",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_fighter1Id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_fighter2Id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_durationSeconds",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_rewardAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_startPrice1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_startPrice2",
+        "type": "uint256"
+      }
+    ],
+    "name": "createFight",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "fights",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "fighter1Id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "fighter2Id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "startTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "endTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rewardAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "owner1",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "owner2",
+        "type": "address"
+      },
+      {
+        "internalType": "uint8",
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "winningTokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "startPrice1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "startPrice2",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "stakedNFTOwners",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "isInFightQueue",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "fightQueue",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "nextFightId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "nftId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "FightQueued",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "fightId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "fighter1Id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "fighter2Id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "startTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "endTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "FightCreated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "nftId",
+        "type": "uint256"
+      }
+    ],
+    "name": "NotOwnerOfNFT",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "nftId",
+        "type": "uint256"
+      }
+    ],
+    "name": "NFTAlreadyInFight",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InsufficientStakedNFTs",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidFightParameters",
+    "type": "error"
+  }
+]

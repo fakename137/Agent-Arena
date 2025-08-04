@@ -1,12 +1,12 @@
 // pages/battles/basement.js (or your actual file name)
 import { useEffect, useRef, useCallback } from 'react'; // Added useCallback
-import { GameEngine } from '../../lib/gameEngine';
-import { CharacterManager } from '../../lib/characterManager';
-import { CombatSystem } from '../../lib/combatSystem';
-import { SoundManager } from '../../lib/soundManager';
-import { CombatLogger } from '../../lib/combatLogger';
-import { useGameState } from '../../hooks/useGameState';
-import { GameUI } from '../../components/GameUI';
+import { GameEngine } from '../lib/gameEngine';
+import { CharacterManager } from '../lib/characterManager';
+import { CombatSystem } from '../lib/combatSystem';
+import { SoundManager } from '../lib/soundManager';
+import { CombatLogger } from '../lib/combatLogger';
+import { useGameState } from '../hooks/useGameState';
+import { GameUI } from '../components/GameUI';
 
 export default function StreetBattle() {
   const mountRef = useRef(null);
@@ -191,6 +191,19 @@ export default function StreetBattle() {
       }
     }
   }, [bossHealth, remyHealth, loading, isGameOver]); // Depend on health and game state
+
+  // --- NEW: Auto-start combat when loading is complete ---
+  useEffect(() => {
+    if (!loading && !isAutoCombatActiveRef.current && !isGameOver()) {
+      // Wait a short moment for everything to be ready, then start combat
+      const timer = setTimeout(() => {
+        console.log('[AUTO] Auto-starting combat from Watch button...');
+        startAutomatedCombat();
+      }, 1000); // 1 second delay to ensure everything is ready
+
+      return () => clearTimeout(timer);
+    }
+  }, [loading, startAutomatedCombat, isGameOver]);
 
   // Handle skip loading
   const handleSkipLoading = () => {
