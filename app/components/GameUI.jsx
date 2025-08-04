@@ -21,15 +21,15 @@ export function GameUI({
 
   // Loading screen
   if (loading) {
-  return (
-        <div
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            color: 'white',
-            textAlign: 'center',
+    return (
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          color: 'white',
+          textAlign: 'center',
           zIndex: 10,
         }}
       >
@@ -38,22 +38,22 @@ export function GameUI({
         </div>
         <div style={{ fontSize: '16px', marginBottom: '10px' }}>
           Brad: {progress.boss}% | Remy: {progress.remy}%
-          </div>
-          <button
-            onClick={onSkipLoading}
-            style={{
-              padding: '10px 20px',
+        </div>
+        <button
+          onClick={onSkipLoading}
+          style={{
+            padding: '10px 20px',
             fontSize: '16px',
             backgroundColor: '#ff0000',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-            }}
-          >
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }}
+        >
           Skip Loading
-          </button>
-        </div>
+        </button>
+      </div>
     );
   }
 

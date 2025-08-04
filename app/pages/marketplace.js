@@ -16,7 +16,7 @@ const characters = [
     defense: 88,
     speed: 82,
     special: 'Iron Fist Combo',
-    price: '0.01 ETH',
+    price: '0.01 XYZ',
     animations: [
       'Bouncing Fight Idle.fbx',
       'Punching.fbx',
@@ -36,7 +36,7 @@ const characters = [
     defense: 75,
     speed: 95,
     special: 'Shadow Strike',
-    price: '0.01 ETH',
+    price: '0.01 XYZ',
     animations: [
       'Bouncing Fight Idle.fbx',
       'Roundhouse Kick.fbx',
@@ -56,7 +56,7 @@ const characters = [
     defense: 85,
     speed: 85,
     special: "Warrior's Fury",
-    price: '0.01 ETH',
+    price: '0.01 XYZ',
     animations: [
       'Bouncing Fight Idle.fbx',
       'Boxing.fbx',
@@ -76,7 +76,7 @@ const characters = [
     defense: 92,
     speed: 70,
     special: 'Demolition Strike',
-    price: '0.01 ETH',
+    price: '0.01 XYZ',
     animations: [
       'Bouncing Fight Idle.fbx',
       'Headbutt.fbx',
@@ -96,7 +96,7 @@ const characters = [
     defense: 80,
     speed: 90,
     special: 'Phantom Combo',
-    price: '0.01 ETH',
+    price: '0.01 XYZ',
     animations: [
       'Bouncing Fight Idle.fbx',
       'Chapa-Giratoria.fbx',
