@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { usePythPriceStream } from '../../hooks/usePythPrices';
-import { loadCharacters } from '../../components.jsx/Characters'; // Import the new hook
+import { CharacterManager } from '../../lib/characterManager'; // Import the character manager
 
 export default function StreetBattle() {
   const mountRef = useRef(null);
@@ -145,6 +145,7 @@ export default function StreetBattle() {
       boss: false,
       remy: false,
     },
+    characterManager: null, // Add character manager reference
   });
   // Inside the main useEffect, REPLACE the existing iframe setup section with this:
 
@@ -213,14 +214,36 @@ export default function StreetBattle() {
     gameRef.current.camera = camera;
     gameRef.current.renderer = renderer;
 
-    // Define loadCharacters inside useEffect or ensure it's accessible
-    // For this example, I'll assume loadCharacters is defined outside but needs scene.
-    // If it's defined inside, move its definition here.
+    // Initialize character manager
+    const characterManager = new CharacterManager();
+    gameRef.current.characterManager = characterManager;
+
     // Define the handler for iframe load
     const handleIframeLoad = () => {
       console.log('Sketchfab background iframe loaded.');
       // Now that the background is loaded, load the characters
-      loadCharacters(scene); // Pass the scene object
+      characterManager.loadCharacters(
+        scene,
+        (character, loaded, total) => {
+          // Progress callback
+          setProgress((prev) => ({
+            ...prev,
+            [character]: (loaded / total) * 100,
+          }));
+        },
+        () => {
+          // Complete callback
+          console.log('Characters loaded successfully!');
+          setLoading(false);
+
+          // Store references to characters and mixers
+          gameRef.current.boss = characterManager.boss;
+          gameRef.current.remy = characterManager.remy;
+          gameRef.current.mixerBoss = characterManager.mixerBoss;
+          gameRef.current.mixerRemy = characterManager.mixerRemy;
+          gameRef.current.actions = characterManager.actions;
+        }
+      );
     };
 
     // Assign the load handler to the iframe

@@ -1,6 +1,7 @@
 // pages/_app.js
 import '../styles/globals.css';
 import { SequenceConnect, createConfig } from '@0xsequence/connect';
+import { PrivyProvider } from '@privy-io/react-auth';
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
 
@@ -15,6 +16,9 @@ function MyApp({ Component, pageProps }) {
   const walletConnectProjectId =
     process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID ||
     'c4f79cc821944d9680842e34466bfbd9';
+
+  // Privy App ID
+  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'demo-app-id';
 
   // ⚙️ Sequence WaaS Config
   const config = createConfig('waas', {
@@ -50,16 +54,40 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <SequenceConnect config={config}>
-        <Navbar />
-        {/* Buy Characters Button */}
+      {privyAppId && privyAppId !== 'demo-app-id' ? (
+        <PrivyProvider
+          appId={privyAppId}
+          config={{
+            embeddedWallets: {
+              createOnLogin: 'all-users',
+            },
+            defaultChainId: 128123, // Etherlink Testnet
+            supportedChainIds: [128123], // Only Etherlink Testnet
+          }}
+        >
+          <SequenceConnect config={config}>
+            <Navbar />
+            {/* Buy Characters Button */}
 
-        <div>
-          {' '}
-          {/* Increased padding to accommodate both navbar and button */}
-          <Component {...pageProps} />
-        </div>
-      </SequenceConnect>
+            <div>
+              {' '}
+              {/* Increased padding to accommodate both navbar and button */}
+              <Component {...pageProps} />
+            </div>
+          </SequenceConnect>
+        </PrivyProvider>
+      ) : (
+        <SequenceConnect config={config}>
+          <Navbar />
+          {/* Buy Characters Button */}
+
+          <div>
+            {' '}
+            {/* Increased padding to accommodate both navbar and button */}
+            <Component {...pageProps} />
+          </div>
+        </SequenceConnect>
+      )}
     </>
   );
 }

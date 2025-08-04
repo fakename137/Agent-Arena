@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 export default function HomePageBackground() {
@@ -10,13 +11,14 @@ export default function HomePageBackground() {
   const [charactersLoaded, setCharactersLoaded] = useState(false);
   const [showReadyText, setShowReadyText] = useState(false);
   const [error, setError] = useState(null);
+  const router = useRouter();
 
-  // Remove wagmi hooks to avoid disconnect errors
+  // Removed wagmi hooks to avoid disconnect errors
   const address = null;
   const isConnected = false;
   const disconnect = () => {};
 
-  const displayAddress = 'Unknown';
+  const displayAddress = 'Unknown'; // Simplified as wagmi hooks are removed
 
   // Ref to hold game state including animation data
   const gameRef = useRef({
@@ -812,7 +814,7 @@ export default function HomePageBackground() {
           letterSpacing: 1,
           textShadow: '1px 1px 2px #fff',
         }}
-        onClick={() => alert('Battle Now!')}
+        onClick={() => router.push('/arena')}
       >
         Fight Now
       </button>
