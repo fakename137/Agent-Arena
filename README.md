@@ -235,17 +235,15 @@ NEXT_PUBLIC_APP_NAME="The Hash Pit"
 - [x] Basic 3D fighting interface
 - [x] Wallet integration
 - [x] Battle creation and joining
+- [x] Pyth Network integration
+- [x] Live market data feeds
+- [x] Enhanced 3D animations
 
-### Phase 2 🚧
+### Phase 2 📋
 
-- [ ] Pyth Network integration
-- [ ] Live market data feeds
-- [ ] Enhanced 3D animations
 - [ ] Power-up system
-
-### Phase 3 📋
-
 - [ ] Tournament system
+- [ ] Real World Animations & more environments & more characters
 - [ ] Leaderboards
 - [ ] Mobile optimization
 - [ ] Cross-chain expansion
