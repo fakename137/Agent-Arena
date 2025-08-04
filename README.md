@@ -1,4 +1,5 @@
 # 🥊 The Hash Pit
+<img width="1920" height="954" alt="Screenshot 2025-08-05 at 2 32 15 AM" src="https://github.com/user-attachments/assets/ef9a2743-caac-4255-aff5-9db283656a33" />
 
 > **Where crypto meets combat, and volatility decides your fate.**
 
